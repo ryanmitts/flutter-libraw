@@ -87,6 +87,23 @@ class FlutterLibRawBindings {
   late final _libraw_open_file = _libraw_open_filePtr.asFunction<
       int Function(ffi.Pointer<libraw_data_t>, ffi.Pointer<ffi.Uint8>)>();
 
+  int libraw_open_wfile(
+    ffi.Pointer<libraw_data_t> arg0,
+    ffi.Pointer<ffi.WChar> arg1,
+  ) {
+    return _libraw_open_wfile(
+      arg0,
+      arg1,
+    );
+  }
+
+  late final _libraw_open_wfilePtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Int Function(ffi.Pointer<libraw_data_t>,
+              ffi.Pointer<ffi.WChar>)>>('libraw_open_wfile');
+  late final _libraw_open_wfile = _libraw_open_wfilePtr.asFunction<
+      int Function(ffi.Pointer<libraw_data_t>, ffi.Pointer<ffi.WChar>)>();
+
   int libraw_open_buffer(
     ffi.Pointer<libraw_data_t> arg0,
     ffi.Pointer<ffi.Void> buffer,
@@ -1014,44 +1031,22 @@ enum LibRaw_progress {
       };
 }
 
-final class libraw_data_t extends ffi.Struct {
-  external ffi.Pointer<ffi.Pointer<ushort>> image;
-
-  external libraw_image_sizes_t sizes;
-
-  external libraw_iparams_t idata;
-
-  external libraw_lensinfo_t lens;
-
-  external libraw_makernotes_t makernotes;
-
-  external libraw_shootinginfo_t shootinginfo;
-
-  external libraw_output_params_t params;
-
-  external libraw_raw_unpack_params_t rawparams;
-
-  @ffi.UnsignedInt()
-  external int progress_flags;
-
-  @ffi.UnsignedInt()
-  external int process_warnings;
-
-  external libraw_colordata_t color;
-
-  external libraw_imgother_t other;
-
-  external libraw_thumbnail_t thumbnail;
-
-  external libraw_thumbnail_list_t thumbs_list;
-
-  external libraw_rawdata_t rawdata;
-
-  external ffi.Pointer<ffi.Void> parent_class;
-}
-
 typedef ushort = ffi.UnsignedShort;
 typedef Dartushort = int;
+
+final class libraw_raw_inset_crop_t extends ffi.Struct {
+  @ushort()
+  external int cleft;
+
+  @ushort()
+  external int ctop;
+
+  @ushort()
+  external int cwidth;
+
+  @ushort()
+  external int cheight;
+}
 
 final class libraw_image_sizes_t extends ffi.Struct {
   @ushort()
@@ -1095,20 +1090,6 @@ final class libraw_image_sizes_t extends ffi.Struct {
 
   @ffi.Array.multi([2])
   external ffi.Array<libraw_raw_inset_crop_t> raw_inset_crops;
-}
-
-final class libraw_raw_inset_crop_t extends ffi.Struct {
-  @ushort()
-  external int cleft;
-
-  @ushort()
-  external int ctop;
-
-  @ushort()
-  external int cwidth;
-
-  @ushort()
-  external int cheight;
 }
 
 final class libraw_iparams_t extends ffi.Struct {
@@ -1163,43 +1144,8 @@ final class libraw_iparams_t extends ffi.Struct {
   external ffi.Pointer<ffi.Uint8> xmpdata;
 }
 
-final class libraw_lensinfo_t extends ffi.Struct {
-  @ffi.Float()
-  external double MinFocal;
-
-  @ffi.Float()
-  external double MaxFocal;
-
-  @ffi.Float()
-  external double MaxAp4MinFocal;
-
-  @ffi.Float()
-  external double MaxAp4MaxFocal;
-
-  @ffi.Float()
-  external double EXIF_MaxAp;
-
-  @ffi.Array.multi([128])
-  external ffi.Array<ffi.Uint8> LensMake;
-
-  @ffi.Array.multi([128])
-  external ffi.Array<ffi.Uint8> Lens;
-
-  @ffi.Array.multi([128])
-  external ffi.Array<ffi.Uint8> LensSerial;
-
-  @ffi.Array.multi([128])
-  external ffi.Array<ffi.Uint8> InternalLensSerial;
-
-  @ushort()
-  external int FocalLengthIn35mmFormat;
-
-  external libraw_nikonlens_t nikon;
-
-  external libraw_dnglens_t dng;
-
-  external libraw_makernotes_lens_t makernotes;
-}
+typedef uchar = ffi.UnsignedChar;
+typedef Dartuchar = int;
 
 final class libraw_nikonlens_t extends ffi.Struct {
   @ffi.Float()
@@ -1217,9 +1163,6 @@ final class libraw_nikonlens_t extends ffi.Struct {
   @uchar()
   external int LensType;
 }
-
-typedef uchar = ffi.UnsignedChar;
-typedef Dartuchar = int;
 
 final class libraw_dnglens_t extends ffi.Struct {
   @ffi.Float()
@@ -1344,32 +1287,57 @@ final class libraw_makernotes_lens_t extends ffi.Struct {
   external double FocalLengthIn35mmFormat;
 }
 
-final class libraw_makernotes_t extends ffi.Struct {
-  external libraw_canon_makernotes_t canon;
+final class libraw_lensinfo_t extends ffi.Struct {
+  @ffi.Float()
+  external double MinFocal;
 
-  external libraw_nikon_makernotes_t nikon;
+  @ffi.Float()
+  external double MaxFocal;
 
-  external libraw_hasselblad_makernotes_t hasselblad;
+  @ffi.Float()
+  external double MaxAp4MinFocal;
 
-  external libraw_fuji_info_t fuji;
+  @ffi.Float()
+  external double MaxAp4MaxFocal;
 
-  external libraw_olympus_makernotes_t olympus;
+  @ffi.Float()
+  external double EXIF_MaxAp;
 
-  external libraw_sony_info_t sony;
+  @ffi.Array.multi([128])
+  external ffi.Array<ffi.Uint8> LensMake;
 
-  external libraw_kodak_makernotes_t kodak;
+  @ffi.Array.multi([128])
+  external ffi.Array<ffi.Uint8> Lens;
 
-  external libraw_panasonic_makernotes_t panasonic;
+  @ffi.Array.multi([128])
+  external ffi.Array<ffi.Uint8> LensSerial;
 
-  external libraw_pentax_makernotes_t pentax;
+  @ffi.Array.multi([128])
+  external ffi.Array<ffi.Uint8> InternalLensSerial;
 
-  external libraw_p1_makernotes_t phaseone;
+  @ushort()
+  external int FocalLengthIn35mmFormat;
 
-  external libraw_ricoh_makernotes_t ricoh;
+  external libraw_nikonlens_t nikon;
 
-  external libraw_samsung_makernotes_t samsung;
+  external libraw_dnglens_t dng;
 
-  external libraw_metadata_common_t common;
+  external libraw_makernotes_lens_t makernotes;
+}
+
+final class libraw_area_t extends ffi.Struct {
+  /// top, left, bottom, right pixel coordinates, (0,0) is top left pixel;
+  @ffi.Short()
+  external int t;
+
+  @ffi.Short()
+  external int l;
+
+  @ffi.Short()
+  external int b;
+
+  @ffi.Short()
+  external int r;
 }
 
 final class libraw_canon_makernotes_t extends ffi.Struct {
@@ -1505,19 +1473,18 @@ final class libraw_canon_makernotes_t extends ffi.Struct {
   external ffi.Array<ffi.Short> ISOgain;
 }
 
-final class libraw_area_t extends ffi.Struct {
-  /// top, left, bottom, right pixel coordinates, (0,0) is top left pixel;
-  @ffi.Short()
-  external int t;
+final class libraw_sensor_highspeed_crop_t extends ffi.Struct {
+  @ushort()
+  external int cleft;
 
-  @ffi.Short()
-  external int l;
+  @ushort()
+  external int ctop;
 
-  @ffi.Short()
-  external int b;
+  @ushort()
+  external int cwidth;
 
-  @ffi.Short()
-  external int r;
+  @ushort()
+  external int cheight;
 }
 
 final class libraw_nikon_makernotes_t extends ffi.Struct {
@@ -1687,20 +1654,6 @@ final class libraw_nikon_makernotes_t extends ffi.Struct {
   /// positive is to the right
   @ffi.Double()
   external double YawAngle;
-}
-
-final class libraw_sensor_highspeed_crop_t extends ffi.Struct {
-  @ushort()
-  external int cleft;
-
-  @ushort()
-  external int ctop;
-
-  @ushort()
-  external int cwidth;
-
-  @ushort()
-  external int cheight;
 }
 
 final class libraw_hasselblad_makernotes_t extends ffi.Struct {
@@ -2434,6 +2387,22 @@ final class libraw_samsung_makernotes_t extends ffi.Struct {
   external ffi.Array<ffi.Uint8> LensFirmware;
 }
 
+final class libraw_afinfo_item_t extends ffi.Struct {
+  @ffi.UnsignedInt()
+  external int AFInfoData_tag;
+
+  @ffi.Short()
+  external int AFInfoData_order;
+
+  @ffi.UnsignedInt()
+  external int AFInfoData_version;
+
+  @ffi.UnsignedInt()
+  external int AFInfoData_length;
+
+  external ffi.Pointer<uchar> AFInfoData;
+}
+
 final class libraw_metadata_common_t extends ffi.Struct {
   @ffi.Float()
   external double FlashEC;
@@ -2499,20 +2468,32 @@ final class libraw_metadata_common_t extends ffi.Struct {
   external int afcount;
 }
 
-final class libraw_afinfo_item_t extends ffi.Struct {
-  @ffi.UnsignedInt()
-  external int AFInfoData_tag;
+final class libraw_makernotes_t extends ffi.Struct {
+  external libraw_canon_makernotes_t canon;
 
-  @ffi.Short()
-  external int AFInfoData_order;
+  external libraw_nikon_makernotes_t nikon;
 
-  @ffi.UnsignedInt()
-  external int AFInfoData_version;
+  external libraw_hasselblad_makernotes_t hasselblad;
 
-  @ffi.UnsignedInt()
-  external int AFInfoData_length;
+  external libraw_fuji_info_t fuji;
 
-  external ffi.Pointer<uchar> AFInfoData;
+  external libraw_olympus_makernotes_t olympus;
+
+  external libraw_sony_info_t sony;
+
+  external libraw_kodak_makernotes_t kodak;
+
+  external libraw_panasonic_makernotes_t panasonic;
+
+  external libraw_pentax_makernotes_t pentax;
+
+  external libraw_p1_makernotes_t phaseone;
+
+  external libraw_ricoh_makernotes_t ricoh;
+
+  external libraw_samsung_makernotes_t samsung;
+
+  external libraw_metadata_common_t common;
 }
 
 final class libraw_shootinginfo_t extends ffi.Struct {
@@ -2730,6 +2711,100 @@ final class libraw_raw_unpack_params_t extends ffi.Struct {
   external ffi.Pointer<ffi.Pointer<ffi.Uint8>> custom_camera_strings;
 }
 
+final class ph1_t extends ffi.Struct {
+  @ffi.Int()
+  external int format;
+
+  @ffi.Int()
+  external int key_off;
+
+  @ffi.Int()
+  external int tag_21a;
+
+  @ffi.Int()
+  external int t_black;
+
+  @ffi.Int()
+  external int split_col;
+
+  @ffi.Int()
+  external int black_col;
+
+  @ffi.Int()
+  external int split_row;
+
+  @ffi.Int()
+  external int black_row;
+
+  @ffi.Float()
+  external double tag_210;
+}
+
+final class libraw_dng_color_t extends ffi.Struct {
+  @ffi.UnsignedInt()
+  external int parsedfields;
+
+  @ushort()
+  external int illuminant;
+
+  @ffi.Array.multi([4, 4])
+  external ffi.Array<ffi.Array<ffi.Float>> calibration;
+
+  @ffi.Array.multi([4, 3])
+  external ffi.Array<ffi.Array<ffi.Float>> colormatrix;
+
+  @ffi.Array.multi([3, 4])
+  external ffi.Array<ffi.Array<ffi.Float>> forwardmatrix;
+}
+
+final class libraw_dng_levels_t extends ffi.Struct {
+  @ffi.UnsignedInt()
+  external int parsedfields;
+
+  @ffi.Array.multi([4104])
+  external ffi.Array<ffi.UnsignedInt> dng_cblack;
+
+  @ffi.UnsignedInt()
+  external int dng_black;
+
+  @ffi.Array.multi([4104])
+  external ffi.Array<ffi.Float> dng_fcblack;
+
+  @ffi.Float()
+  external double dng_fblack;
+
+  @ffi.Array.multi([4])
+  external ffi.Array<ffi.UnsignedInt> dng_whitelevel;
+
+  /// Origin and size
+  @ffi.Array.multi([4])
+  external ffi.Array<ushort> default_crop;
+
+  /// top-left-bottom-right relative to default_crop
+  @ffi.Array.multi([4])
+  external ffi.Array<ffi.Float> user_crop;
+
+  @ffi.UnsignedInt()
+  external int preview_colorspace;
+
+  @ffi.Array.multi([4])
+  external ffi.Array<ffi.Float> analogbalance;
+
+  @ffi.Array.multi([4])
+  external ffi.Array<ffi.Float> asshotneutral;
+
+  @ffi.Float()
+  external double baseline_exposure;
+
+  @ffi.Float()
+  external double LinearResponseLimit;
+}
+
+final class libraw_P1_color_t extends ffi.Struct {
+  @ffi.Array.multi([9])
+  external ffi.Array<ffi.Float> romm_cam;
+}
+
 final class libraw_colordata_t extends ffi.Struct {
   @ffi.Array.multi([65536])
   external ffi.Array<ushort> curve;
@@ -2861,98 +2936,40 @@ final class libraw_colordata_t extends ffi.Struct {
   external int ExifColorSpace;
 }
 
-final class ph1_t extends ffi.Struct {
-  @ffi.Int()
-  external int format;
+typedef __time64_t = ffi.LongLong;
+typedef Dart__time64_t = int;
+typedef time_t = __time64_t;
 
-  @ffi.Int()
-  external int key_off;
+final class libraw_gps_info_t extends ffi.Struct {
+  /// Deg,min,sec
+  @ffi.Array.multi([3])
+  external ffi.Array<ffi.Float> latitude;
 
-  @ffi.Int()
-  external int tag_21a;
+  /// Deg,min,sec
+  @ffi.Array.multi([3])
+  external ffi.Array<ffi.Float> longitude;
 
-  @ffi.Int()
-  external int t_black;
-
-  @ffi.Int()
-  external int split_col;
-
-  @ffi.Int()
-  external int black_col;
-
-  @ffi.Int()
-  external int split_row;
-
-  @ffi.Int()
-  external int black_row;
+  /// Deg,min,sec
+  @ffi.Array.multi([3])
+  external ffi.Array<ffi.Float> gpstimestamp;
 
   @ffi.Float()
-  external double tag_210;
-}
+  external double altitude;
 
-final class libraw_dng_color_t extends ffi.Struct {
-  @ffi.UnsignedInt()
-  external int parsedfields;
+  @ffi.Uint8()
+  external int altref;
 
-  @ushort()
-  external int illuminant;
+  @ffi.Uint8()
+  external int latref;
 
-  @ffi.Array.multi([4, 4])
-  external ffi.Array<ffi.Array<ffi.Float>> calibration;
+  @ffi.Uint8()
+  external int longref;
 
-  @ffi.Array.multi([4, 3])
-  external ffi.Array<ffi.Array<ffi.Float>> colormatrix;
+  @ffi.Uint8()
+  external int gpsstatus;
 
-  @ffi.Array.multi([3, 4])
-  external ffi.Array<ffi.Array<ffi.Float>> forwardmatrix;
-}
-
-final class libraw_dng_levels_t extends ffi.Struct {
-  @ffi.UnsignedInt()
-  external int parsedfields;
-
-  @ffi.Array.multi([4104])
-  external ffi.Array<ffi.UnsignedInt> dng_cblack;
-
-  @ffi.UnsignedInt()
-  external int dng_black;
-
-  @ffi.Array.multi([4104])
-  external ffi.Array<ffi.Float> dng_fcblack;
-
-  @ffi.Float()
-  external double dng_fblack;
-
-  @ffi.Array.multi([4])
-  external ffi.Array<ffi.UnsignedInt> dng_whitelevel;
-
-  /// Origin and size
-  @ffi.Array.multi([4])
-  external ffi.Array<ushort> default_crop;
-
-  /// top-left-bottom-right relative to default_crop
-  @ffi.Array.multi([4])
-  external ffi.Array<ffi.Float> user_crop;
-
-  @ffi.UnsignedInt()
-  external int preview_colorspace;
-
-  @ffi.Array.multi([4])
-  external ffi.Array<ffi.Float> analogbalance;
-
-  @ffi.Array.multi([4])
-  external ffi.Array<ffi.Float> asshotneutral;
-
-  @ffi.Float()
-  external double baseline_exposure;
-
-  @ffi.Float()
-  external double LinearResponseLimit;
-}
-
-final class libraw_P1_color_t extends ffi.Struct {
-  @ffi.Array.multi([9])
-  external ffi.Array<ffi.Float> romm_cam;
+  @ffi.Uint8()
+  external int gpsparsed;
 }
 
 final class libraw_imgother_t extends ffi.Struct {
@@ -2989,61 +3006,6 @@ final class libraw_imgother_t extends ffi.Struct {
   external ffi.Array<ffi.Float> analogbalance;
 }
 
-typedef time_t = __darwin_time_t;
-typedef __darwin_time_t = ffi.Long;
-typedef Dart__darwin_time_t = int;
-
-final class libraw_gps_info_t extends ffi.Struct {
-  /// Deg,min,sec
-  @ffi.Array.multi([3])
-  external ffi.Array<ffi.Float> latitude;
-
-  /// Deg,min,sec
-  @ffi.Array.multi([3])
-  external ffi.Array<ffi.Float> longitude;
-
-  /// Deg,min,sec
-  @ffi.Array.multi([3])
-  external ffi.Array<ffi.Float> gpstimestamp;
-
-  @ffi.Float()
-  external double altitude;
-
-  @ffi.Uint8()
-  external int altref;
-
-  @ffi.Uint8()
-  external int latref;
-
-  @ffi.Uint8()
-  external int longref;
-
-  @ffi.Uint8()
-  external int gpsstatus;
-
-  @ffi.Uint8()
-  external int gpsparsed;
-}
-
-final class libraw_thumbnail_t extends ffi.Struct {
-  @ffi.UnsignedInt()
-  external int tformat;
-
-  @ushort()
-  external int twidth;
-
-  @ushort()
-  external int theight;
-
-  @ffi.UnsignedInt()
-  external int tlength;
-
-  @ffi.Int()
-  external int tcolors;
-
-  external ffi.Pointer<ffi.Uint8> thumb;
-}
-
 enum LibRaw_thumbnail_formats {
   LIBRAW_THUMBNAIL_UNKNOWN(0),
   LIBRAW_THUMBNAIL_JPEG(1),
@@ -3069,17 +3031,12 @@ enum LibRaw_thumbnail_formats {
       };
 }
 
-final class libraw_thumbnail_list_t extends ffi.Struct {
-  @ffi.Int()
-  external int thumbcount;
-
-  @ffi.Array.multi([8])
-  external ffi.Array<libraw_thumbnail_item_t> thumblist;
-}
-
-final class libraw_thumbnail_item_t extends ffi.Struct {
+final class libraw_thumbnail_t extends ffi.Struct {
   @ffi.UnsignedInt()
-  external int tformat;
+  external int tformatAsInt;
+
+  LibRaw_thumbnail_formats get tformat =>
+      LibRaw_thumbnail_formats.fromValue(tformatAsInt);
 
   @ushort()
   external int twidth;
@@ -3087,17 +3044,13 @@ final class libraw_thumbnail_item_t extends ffi.Struct {
   @ushort()
   external int theight;
 
-  @ushort()
-  external int tflip;
-
   @ffi.UnsignedInt()
   external int tlength;
 
-  @ffi.UnsignedInt()
-  external int tmisc;
+  @ffi.Int()
+  external int tcolors;
 
-  @INT64()
-  external int toffset;
+  external ffi.Pointer<ffi.Uint8> thumb;
 }
 
 enum LibRaw_internal_thumbnail_formats {
@@ -3134,6 +3087,57 @@ enum LibRaw_internal_thumbnail_formats {
 
 typedef INT64 = ffi.LongLong;
 typedef DartINT64 = int;
+
+final class libraw_thumbnail_item_t extends ffi.Struct {
+  @ffi.UnsignedInt()
+  external int tformatAsInt;
+
+  LibRaw_internal_thumbnail_formats get tformat =>
+      LibRaw_internal_thumbnail_formats.fromValue(tformatAsInt);
+
+  @ushort()
+  external int twidth;
+
+  @ushort()
+  external int theight;
+
+  @ushort()
+  external int tflip;
+
+  @ffi.UnsignedInt()
+  external int tlength;
+
+  @ffi.UnsignedInt()
+  external int tmisc;
+
+  @INT64()
+  external int toffset;
+}
+
+final class libraw_thumbnail_list_t extends ffi.Struct {
+  @ffi.Int()
+  external int thumbcount;
+
+  @ffi.Array.multi([8])
+  external ffi.Array<libraw_thumbnail_item_t> thumblist;
+}
+
+final class libraw_internal_output_params_t extends ffi.Struct {
+  @ffi.UnsignedInt()
+  external int mix_green;
+
+  @ffi.UnsignedInt()
+  external int raw_color;
+
+  @ffi.UnsignedInt()
+  external int zero_is_bad;
+
+  @ushort()
+  external int shrink;
+
+  @ushort()
+  external int fuji_width;
+}
 
 final class libraw_rawdata_t extends ffi.Struct {
   /// really allocated bitmap
@@ -3172,25 +3176,42 @@ final class libraw_rawdata_t extends ffi.Struct {
   external libraw_colordata_t color;
 }
 
-final class libraw_internal_output_params_t extends ffi.Struct {
-  @ffi.UnsignedInt()
-  external int mix_green;
+final class libraw_data_t extends ffi.Struct {
+  external ffi.Pointer<ffi.Pointer<ushort>> image;
+
+  external libraw_image_sizes_t sizes;
+
+  external libraw_iparams_t idata;
+
+  external libraw_lensinfo_t lens;
+
+  external libraw_makernotes_t makernotes;
+
+  external libraw_shootinginfo_t shootinginfo;
+
+  external libraw_output_params_t params;
+
+  external libraw_raw_unpack_params_t rawparams;
 
   @ffi.UnsignedInt()
-  external int raw_color;
+  external int progress_flags;
 
   @ffi.UnsignedInt()
-  external int zero_is_bad;
+  external int process_warnings;
 
-  @ushort()
-  external int shrink;
+  external libraw_colordata_t color;
 
-  @ushort()
-  external int fuji_width;
+  external libraw_imgother_t other;
+
+  external libraw_thumbnail_t thumbnail;
+
+  external libraw_thumbnail_list_t thumbs_list;
+
+  external libraw_rawdata_t rawdata;
+
+  external ffi.Pointer<ffi.Void> parent_class;
 }
 
-typedef exif_parser_callback
-    = ffi.Pointer<ffi.NativeFunction<exif_parser_callbackFunction>>;
 typedef exif_parser_callbackFunction = ffi.Void Function(
     ffi.Pointer<ffi.Void> context,
     ffi.Int tag,
@@ -3207,17 +3228,19 @@ typedef Dartexif_parser_callbackFunction = void Function(
     int ord,
     ffi.Pointer<ffi.Void> ifp,
     DartINT64 base);
-typedef data_callback = ffi.Pointer<ffi.NativeFunction<data_callbackFunction>>;
+typedef exif_parser_callback
+    = ffi.Pointer<ffi.NativeFunction<exif_parser_callbackFunction>>;
 typedef data_callbackFunction = ffi.Void Function(
     ffi.Pointer<ffi.Void> data, ffi.Pointer<ffi.Uint8> file, ffi.Int offset);
 typedef Dartdata_callbackFunction = void Function(
     ffi.Pointer<ffi.Void> data, ffi.Pointer<ffi.Uint8> file, int offset);
-typedef progress_callback
-    = ffi.Pointer<ffi.NativeFunction<progress_callbackFunction>>;
+typedef data_callback = ffi.Pointer<ffi.NativeFunction<data_callbackFunction>>;
 typedef progress_callbackFunction = ffi.Int Function(ffi.Pointer<ffi.Void> data,
     ffi.UnsignedInt stage, ffi.Int iteration, ffi.Int expected);
 typedef Dartprogress_callbackFunction = int Function(ffi.Pointer<ffi.Void> data,
     LibRaw_progress stage, int iteration, int expected);
+typedef progress_callback
+    = ffi.Pointer<ffi.NativeFunction<progress_callbackFunction>>;
 
 final class libraw_decoder_info_t extends ffi.Struct {
   external ffi.Pointer<ffi.Uint8> decoder_name;
@@ -3226,9 +3249,26 @@ final class libraw_decoder_info_t extends ffi.Struct {
   external int decoder_flags;
 }
 
+enum LibRaw_image_formats {
+  LIBRAW_IMAGE_JPEG(1),
+  LIBRAW_IMAGE_BITMAP(2);
+
+  final int value;
+  const LibRaw_image_formats(this.value);
+
+  static LibRaw_image_formats fromValue(int value) => switch (value) {
+        1 => LIBRAW_IMAGE_JPEG,
+        2 => LIBRAW_IMAGE_BITMAP,
+        _ =>
+          throw ArgumentError("Unknown value for LibRaw_image_formats: $value"),
+      };
+}
+
 final class libraw_processed_image_t extends ffi.Struct {
   @ffi.UnsignedInt()
-  external int type;
+  external int typeAsInt;
+
+  LibRaw_image_formats get type => LibRaw_image_formats.fromValue(typeAsInt);
 
   @ushort()
   external int height;
@@ -3247,19 +3287,4 @@ final class libraw_processed_image_t extends ffi.Struct {
 
   @ffi.Array.multi([1])
   external ffi.Array<ffi.UnsignedChar> data;
-}
-
-enum LibRaw_image_formats {
-  LIBRAW_IMAGE_JPEG(1),
-  LIBRAW_IMAGE_BITMAP(2);
-
-  final int value;
-  const LibRaw_image_formats(this.value);
-
-  static LibRaw_image_formats fromValue(int value) => switch (value) {
-        1 => LIBRAW_IMAGE_JPEG,
-        2 => LIBRAW_IMAGE_BITMAP,
-        _ =>
-          throw ArgumentError("Unknown value for LibRaw_image_formats: $value"),
-      };
 }

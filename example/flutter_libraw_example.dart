@@ -19,7 +19,7 @@ import 'package:flutter_libraw/flutter_libraw.dart';
 import 'dart:io';
 
 void main() async {
-  File rawFile = File('test/samples/RAW_OLYMPUS_E-M10MARKII.ORF');
+  File rawFile = File(r"C:/Users/Ryan/Desktop/OM_FILES/P3300001.ORF");
   File thumbnailFile = File('${rawFile.absolute.path}.tn.jpg');
   File xmpFile = File('${rawFile.absolute.path}.xmp');
   String fileName = determineLibraryName();
